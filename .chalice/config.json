@@ -3,7 +3,20 @@
   "app_name": "MuscleCore",
   "stages": {
     "dev": {
-      "api_gateway_stage": "api"
+      "api_gateway_stage": "api",
+      "environment_variables": {
+        "ENVIROMENT": "staging/*  */"
+      },
+      "lambda_timeout": 900,
+      "lambda_memory_size": 5120
+    },
+    "prod": {
+      "api_gateway_stage": "api",
+      "environment_variables": {
+        "ENVIROMENT": "production"
+      },
+      "lambda_timeout": 900,
+      "lambda_memory_size": 5120
     }
   }
 }

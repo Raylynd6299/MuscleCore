@@ -1,0 +1,67 @@
+# Static checker https://rhysd.github.io/actionlint/
+name: Chalice Deploy Staging Workflow
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip' # caching pip dependencies https://github.com/actions/setup-python#caching-packages-dependencies
+    
+    - name: Activate virtual environment and install dependencies
+      run: |
+        python3 -m venv venv
+        . venv/bin/activate
+        venv/bin/pip install -r requirements.txt
+
+    - name: Update config.json
+      run: |
+        source venv/bin/activate
+        python scripts/update_config.py
+      env:
+        AMAZON_ACCESS_KEY_ID: ${{ secrets.AMAZON_ACCESS_KEY_ID }}
+        AMAZON_SECRET_ACCESS_KEY: ${{ secrets.AMAZON_SECRET_ACCESS_KEY }}
+        AMAZON_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+       
+    - name: Echo config.json, pre-deploy
+      run: |
+          echo '========== BEGIN CONFIG.JSON =========='
+          cat .chalice/config.json
+          echo '=========== END CONFIG.JSON ==========='
+        
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+          aws-access-key-id: ${{ secrets.AMAZON_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AMAZON_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+  
+      
+    - name: Deploy to AWS Lambda
+      run: |
+        . venv/bin/activate
+        venv/bin/chalice deploy --stage dev
+        venv/bin/chalice url --stage dev
+        
+        git config --local user.email "actions@github.com"
+        git config --local user.name "GitHub Actions"
+
+        git remote set-url origin "https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+        git add .chalice/deployed/* || true
+        git commit -m "actions: add .chalice/* folder [skip-ci]" || true
+
+        git push || true
