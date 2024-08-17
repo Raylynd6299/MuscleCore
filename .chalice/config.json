@@ -8,7 +8,7 @@
         "ENVIROMENT": "staging/*  */"
       },
       "lambda_timeout": 900,
-      "lambda_memory_size": 5120
+      "lambda_memory_size": 3008
     },
     "prod": {
       "api_gateway_stage": "api",
@@ -16,7 +16,7 @@
         "ENVIROMENT": "production"
       },
       "lambda_timeout": 900,
-      "lambda_memory_size": 5120
+      "lambda_memory_size": 3008
     }
   }
 }

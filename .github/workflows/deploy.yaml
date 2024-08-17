@@ -49,7 +49,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AMAZON_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
   
-      
+  
     - name: Deploy to AWS Lambda
       run: |
         . venv/bin/activate
