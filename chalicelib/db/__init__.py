@@ -9,4 +9,4 @@ SUPABASE_CONNECTION_STRING = os.getenv(
 def init_db():
     # Generate mapping
     muscle_core_db.bind(provider="postgres", dsn=SUPABASE_CONNECTION_STRING)
-    muscle_core_db.generate_mapping(create_tables=True, check_tables=False)
+    muscle_core_db.generate_mapping(create_tables=True)
