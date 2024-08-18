@@ -53,6 +53,9 @@ class MuscleCoreAPIAuthenticationHandler:
                 **payload, password=password_hash, salt_password=salt
             )
 
+            print("User created")
+            print(user)
+
             if not user:
                 raise Exception({"error": "Error while creating user."})
             if not isinstance(user, User):
