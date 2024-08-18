@@ -126,7 +126,7 @@ class UserScheduling(muscle_core_db.Entity):
     _table_ = "user_scheduling"
     user_scheduling_id = PrimaryKey(UUID, column="user_scheduling_id", nullable=False)
     user = Required(User, column="user_id")
-    user_weekly_routines = Set(UserWeeklyRoutine, column="user_weekly_routine_id")
+    user_weekly_routines = Set(UserWeeklyRoutine)
     is_active = Required(bool, column="is_active", nullable=False, default=True)
     created_at = Required(str, column="created_at", nullable=False)
     updated_at = Optional(str, column="updated_at", nullable=True)
