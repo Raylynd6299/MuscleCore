@@ -75,6 +75,12 @@ def require_authorization_header_middleware(event, get_response):
 def index():
     request = app.current_request
 
-
-    return {'hello': 'world'}
-
+    try :
+        response = muscle_core_handler.api.authentication.user_handler(request)
+        return response
+    except Exception as e:
+        return Response(
+            body={"error": f"Error while creating user. Exception: {e}"},
+            status_code=400,
+            headers={"Content-Type": "application/json"},
+        )

@@ -21,7 +21,7 @@ class MuscleCoreAPIAuthenticationHandler:
 
     # Billing Information
     @db_session
-    def billing_info_handler(self, request: Optional[Request]) -> Optional[Dict]:
+    def user_handler(self, request: Optional[Request]) -> Optional[Dict]:
         if not request:
             raise Exception({"error": "No request provided"})
 
