@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import auto
 from pony.orm import Database, PrimaryKey, Required, Optional, Set
 from uuid import UUID
 
@@ -27,7 +28,7 @@ class Difficulty:
 
 class User(muscle_core_db.Entity):
     _table_ = "user"
-    user_id = PrimaryKey(UUID, column="user_id", nullable=False)
+    user_id = PrimaryKey(UUID, column="user_id", nullable=False, auto=True)
     email = Required(str, column="email", nullable=False)
     password = Required(str, column="password", nullable=False)
     created_at = Required(str, column="created_at", nullable=False)
@@ -46,7 +47,7 @@ class User(muscle_core_db.Entity):
 
 class Role(muscle_core_db.Entity):
     _table_ = "role"
-    role_id = PrimaryKey(UUID, column="role_id", nullable=False)
+    role_id = PrimaryKey(UUID, column="role_id", nullable=False, auto=True)
     name = Required(str, column="name", nullable=False)
     description = Optional(str, column="description", nullable=True)
     is_active = Required(bool, column="is_active", nullable=False, default=True)
@@ -54,7 +55,7 @@ class Role(muscle_core_db.Entity):
 
 class MuscularGroup(muscle_core_db.Entity):
     _table_ = "muscular_group"
-    muscular_group_id = PrimaryKey(UUID, column="muscular_group_id", nullable=False)
+    muscular_group_id = PrimaryKey(UUID, column="muscular_group_id", nullable=False, auto=True)
     name = Required(str, column="name", nullable=False)
     description = Optional(str, column="description", nullable=True)
     is_active = Required(bool, column="is_active", nullable=False, default=True)
@@ -62,7 +63,7 @@ class MuscularGroup(muscle_core_db.Entity):
 
 class Exercise(muscle_core_db.Entity):
     _table_ = "exercise"
-    exercise_id = PrimaryKey(UUID, column="exercise_id", nullable=False)
+    exercise_id = PrimaryKey(UUID, column="exercise_id", nullable=False, auto=True)
     name = Required(str, column="name", nullable=False)
     description = Optional(str, column="description", nullable=True)
     is_active = Required(bool, column="is_active", nullable=False, default=True)
@@ -82,7 +83,7 @@ class Exercise(muscle_core_db.Entity):
 
 class Workout(muscle_core_db.Entity):
     _table_ = "workout"
-    workout_id = PrimaryKey(UUID, column="workout_id", nullable=False)
+    workout_id = PrimaryKey(UUID, column="workout_id", nullable=False, auto=True)
     users = Set(User, column="user_id")
     name = Required(str, column="name", nullable=False)
     description = Optional(str, column="description", nullable=True)
@@ -96,7 +97,7 @@ class Workout(muscle_core_db.Entity):
 
 class UserRoutineDay(muscle_core_db.Entity):
     _table_ = "user_routine"
-    user_routine_id = PrimaryKey(UUID, column="user_routine_id", nullable=False)
+    user_routine_id = PrimaryKey(UUID, column="user_routine_id", nullable=False, auto=True)
     user = Required(User, column="user_id")
     workouts = Set(Workout, column="workout_id")
     week_day = Required(int, column="week_day", nullable=False, default=WeeklyDay.MONDAY)
@@ -111,7 +112,7 @@ class UserRoutineDay(muscle_core_db.Entity):
 
 class UserWeeklyRoutine(muscle_core_db.Entity):
     _table_ = "user_weekly_routine"
-    user_weekly_routine_id = PrimaryKey(UUID, column="user_weekly_routine_id", nullable=False)
+    user_weekly_routine_id = PrimaryKey(UUID, column="user_weekly_routine_id", nullable=False,  auto=True)
     user = Required(User, column="user_id")
     user_routine_days = Set(UserRoutineDay, column="user_routines_id")
     is_active = Required(bool, column="is_active", nullable=False, default=True)
@@ -124,7 +125,7 @@ class UserWeeklyRoutine(muscle_core_db.Entity):
 
 class UserScheduling(muscle_core_db.Entity):
     _table_ = "user_scheduling"
-    user_scheduling_id = PrimaryKey(UUID, column="user_scheduling_id", nullable=False)
+    user_scheduling_id = PrimaryKey(UUID, column="user_scheduling_id", nullable=False,  auto=True)
     user = Required(User, column="user_id")
     user_weekly_routines = Set(UserWeeklyRoutine)
     is_active = Required(bool, column="is_active", nullable=False, default=True)
@@ -135,7 +136,7 @@ class UserScheduling(muscle_core_db.Entity):
 
 class UserSchedulingHistory(muscle_core_db.Entity):
     _table_ = "user_scheduling_history"
-    user_scheduling_history_id = PrimaryKey(UUID, column="user_scheduling_history_id", nullable=False)
+    user_scheduling_history_id = PrimaryKey(UUID, column="user_scheduling_history_id", nullable=False,  auto=True)
     user_scheduling = Required(UserScheduling, column="user_scheduling_id")
     user_weekly_routine = Required(UserWeeklyRoutine, column="user_weekly_routine_id")
     sort_order = Required(int, column="sort_order", nullable=False)
@@ -145,7 +146,7 @@ class UserSchedulingHistory(muscle_core_db.Entity):
 
 class UserRoutineDayHistory(muscle_core_db.Entity):
     _table_ = "user_routine_history"
-    user_routine_history_id = PrimaryKey(UUID, column="user_routine_history_id", nullable=False)
+    user_routine_history_id = PrimaryKey(UUID, column="user_routine_history_id", nullable=False,  auto=True)
     user_routine = Required(UserRoutineDay, column="user_routine_id")
     created_at = Required(datetime, column="created_at", nullable=False)
     updated_at = Optional(datetime, column="updated_at", nullable=True)
@@ -154,7 +155,7 @@ class UserRoutineDayHistory(muscle_core_db.Entity):
 
 class WorkoutHistory(muscle_core_db.Entity):
     _table_ = "workout_history"
-    workout_history_id = PrimaryKey(UUID, column="workout_history_id", nullable=False)
+    workout_history_id = PrimaryKey(UUID, column="workout_history_id", nullable=False, auto=True)
     user_routine_day_history = Required(UserRoutineDayHistory, column="user_routine_day_history_id")
     workout = Required(Workout, column="workout_id")
     created_at = Required(datetime, column="created_at", nullable=False)
@@ -165,8 +166,8 @@ class WorkoutHistory(muscle_core_db.Entity):
 
 class ExerciseHistory(muscle_core_db.Entity):
     _table_ = "exercise_history"
-    exercise_history_id = PrimaryKey(UUID, column="exercise_history_id", nullable=False)
-    use = Required(User, column="user_id")
+    exercise_history_id = PrimaryKey(UUID, column="exercise_history_id", nullable=False, auto=True)
+    user = Required(User, column="user_id")
     workout_history = Required(WorkoutHistory, column="workout_history_id")
     exercise = Required(Exercise, column="exercise_id")
     created_at = Required(datetime, column="created_at", nullable=False)
@@ -182,6 +183,6 @@ class ExerciseHistory(muscle_core_db.Entity):
 
 class UserHistory(muscle_core_db.Entity):
     _table_ = "user_history"
-    user_history_id = PrimaryKey(UUID, column="user_history_id", nullable=False)
+    user_history_id = PrimaryKey(UUID, column="user_history_id", nullable=False,  auto=True)
     user = Required(User, column="user_id")
     created_at = Required(datetime, column="created_at", nullable=False)
