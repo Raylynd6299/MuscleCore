@@ -55,6 +55,7 @@ class MuscleCoreAPIAuthenticationHandler:
 
             print("User created")
             print(user)
+            print(user.to_dict())
 
             if not user:
                 raise Exception({"error": "Error while creating user."})
@@ -63,7 +64,7 @@ class MuscleCoreAPIAuthenticationHandler:
 
             response = {
                 "user": user.to_dict(),
-                "token": self.encode_authentication_jwt(user.user_id),
+                "token": self.encode_authentication_jwt(str(user.user_id)),
             }
 
             print(response)
