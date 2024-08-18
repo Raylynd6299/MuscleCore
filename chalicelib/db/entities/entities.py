@@ -25,6 +25,10 @@ class Difficulty:
     ADVANCED = 2
     CBUM = 3
 
+class Role: 
+    ADMIN = 0
+    USER = 1
+
 
 class User(muscle_core_db.Entity):
     _table_ = "user"
@@ -51,6 +55,7 @@ class Role(muscle_core_db.Entity):
     name = Required(str, column="name", nullable=False)
     description = Optional(str, column="description", nullable=True)
     is_active = Required(bool, column="is_active", nullable=False, default=True)
+    code = Required(str, column="code", nullable=False, unique=True)
     users = Set(User)
 
 class MuscularGroup(muscle_core_db.Entity):
