@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from pony.orm import db_session
 from chalicelib.db.entities import User, Role
 
@@ -32,13 +32,18 @@ class MuscleCoreAPIAuthenticationDBActionsHandler:
 
         if not role_id:
             print("Role not provided")
-            role = Role.get(code="user")
-            print ("Role: ", role)
+            roles: List[Role] = Role.get(code="user")
+            print ("Role: ", roles)
             
-            if not role:
+            if not roles:
+                raise Exception({"error": "Roles not found."})
+            
+            role = roles[0]
+            
+            if not role or not isinstance(role, Role):
                 raise Exception({"error": "Role not found."})
             
-            role_id = role.role_id
+            role_id = str(role.role_id or "")	
 
         return User(
             first_name=first_name,
