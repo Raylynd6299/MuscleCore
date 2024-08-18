@@ -25,9 +25,6 @@ class Difficulty:
     ADVANCED = 2
     CBUM = 3
 
-class Role: 
-    ADMIN = 0
-    USER = 1
 
 
 class User(muscle_core_db.Entity):
@@ -35,6 +32,7 @@ class User(muscle_core_db.Entity):
     user_id = PrimaryKey(UUID, column="user_id", nullable=False, auto=True)
     email = Required(str, column="email", nullable=False)
     password = Required(str, column="password", nullable=False)
+    salt_password = Required(str, column="salt_password", nullable=False)
     created_at = Required(str, column="created_at", nullable=False)
     is_active = Required(bool, column="is_active", nullable=False, default=True)
     role = Required(lambda: Role, column="role_id", nullable=False)
