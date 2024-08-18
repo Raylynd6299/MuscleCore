@@ -5,7 +5,8 @@
     "dev": {
       "api_gateway_stage": "api",
       "environment_variables": {
-        "ENVIROMENT": "staging/*  */"
+        "ENVIROMENT": "staging",
+        "SUPABASE_BD_URL": ""
       },
       "lambda_timeout": 900,
       "lambda_memory_size": 3008
@@ -13,7 +14,8 @@
     "prod": {
       "api_gateway_stage": "api",
       "environment_variables": {
-        "ENVIROMENT": "production"
+        "ENVIROMENT": "production",
+        "SUPABASE_BD_URL": ""
       },
       "lambda_timeout": 900,
       "lambda_memory_size": 3008
