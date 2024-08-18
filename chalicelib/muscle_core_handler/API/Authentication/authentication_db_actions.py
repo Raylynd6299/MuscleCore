@@ -32,17 +32,15 @@ class MuscleCoreAPIAuthenticationDBActionsHandler:
 
         if not role_id:
             print("Role not provided")
-            roles: List[Role] = Role.get(code="user")
-            print ("Role: ", roles)
+            role: Optional[Role] = Role.get(code="user")
+            print ("Role: ", role)
             
-            if not roles:
+            if not role:
                 raise Exception({"error": "Roles not found."})
             
-            role = roles[0]
-            
-            if not role or not isinstance(role, Role):
-                raise Exception({"error": "Role not found."})
-            
+            print("Role found")
+            print(role.role_id)
+
             role_id = str(role.role_id or "")	
 
         return User(
