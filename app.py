@@ -87,6 +87,13 @@ def sign_up():
         response = muscle_core_handler.api.authentication.auth_sign_up_user_handler(request)
         return response
     except Exception as e:
+        # extract error message from exception
+        if hasattr(e, "error"):
+            return Response(
+                body={"error": f"{e.error}"}, # type: ignore
+                status_code=400,
+                headers={"Content-Type": "application/json"},
+            )
         return Response(
             body={"error": f"Error while creating user. Exception: {e}"},
             status_code=400,
@@ -101,6 +108,12 @@ def sign_in():
         response = muscle_core_handler.api.authentication.auth_sign_in_user_handler(request)
         return response
     except Exception as e:
+        if hasattr(e, "error"):
+            return Response(
+                body={"error": f"{e.error}"}, # type: ignore
+                status_code=400,
+                headers={"Content-Type": "application/json"},
+            )
         return Response(
             body={"error": f"Error while signing in. Exception: {e}"},
             status_code=400,
