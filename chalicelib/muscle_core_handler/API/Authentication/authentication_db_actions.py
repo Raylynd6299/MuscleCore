@@ -40,3 +40,7 @@ class MuscleCoreAPIAuthenticationDBActionsHandler:
             is_active=is_active,
             image_url=image_url,
         )
+
+    @db_session
+    def get_user_by_email(self, email: str) -> Optional[User]:
+        return User.get(email=email)

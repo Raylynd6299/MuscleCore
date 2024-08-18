@@ -71,16 +71,38 @@ def require_authorization_header_middleware(event, get_response):
 
     return get_response(event)
 
+@app.route('/healthcheck', methods=['GET'])
+def healthcheck():
+    return Response(
+        body={"status": "ok", "message": "Healthcheck is ok."},
+        status_code=200,
+        headers={"Content-Type": "application/json"},
+    )
+
 @app.route('/sign-up', methods=['POST'])
-def index():
+def sign_up():
     request = app.current_request
 
     try :
-        response = muscle_core_handler.api.authentication.user_handler(request)
+        response = muscle_core_handler.api.authentication.auth_sign_up_user_handler(request)
         return response
     except Exception as e:
         return Response(
             body={"error": f"Error while creating user. Exception: {e}"},
+            status_code=400,
+            headers={"Content-Type": "application/json"},
+        )
+
+@app.route('/sign-in', methods=['POST'])
+def sign_in():
+    request = app.current_request
+
+    try:
+        response = muscle_core_handler.api.authentication.auth_sign_in_user_handler(request)
+        return response
+    except Exception as e:
+        return Response(
+            body={"error": f"Error while signing in. Exception: {e}"},
             status_code=400,
             headers={"Content-Type": "application/json"},
         )

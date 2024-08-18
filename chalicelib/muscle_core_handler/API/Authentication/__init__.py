@@ -19,15 +19,75 @@ class MuscleCoreAPIAuthenticationHandler:
         self.key_length = 64
         self.digest = "sha512"
 
-    # Billing Information
+    # Auth Sign In Information
     @db_session
-    def user_handler(self, request: Optional[Request]) -> Optional[Dict]:
+    def auth_sign_in_user_handler(self, request: Optional[Request]) -> Optional[Dict]:
         if not request:
             raise Exception({"error": "No request provided"})
 
         try:
             if request.method == "POST":
-                return self.post_user(request)
+                return self.sign_in_user(request)
+            else:
+                raise Exception({"error": "Method not allowed"})
+        except Exception as e:
+            error_message = f"Error while processing muscle core info. Exception {e}"
+            print(error_message)
+            print(e)
+            raise Exception({"error": error_message})
+        
+    @db_session
+    def sign_in_user(self, request):
+        payload = self.sign_in_user_validation(request)
+
+        user = self.auth_bd_actions.get_user_by_email(payload.get("email", ""))
+
+        if not user or not isinstance(user, User):
+            raise Exception({"error": "User not found."})
+
+        if not self.check_password(
+            payload.get("password", ""),
+            str(user.salt_password) ,
+            str(user.password),
+        ):
+            raise Exception({"error": "Password is incorrect."})
+
+        response = {
+            "user": user.to_dict(),
+            "token": self.encode_authentication_jwt(str(user.user_id)),
+        }
+
+        return response
+    
+    def sign_in_user_validation(self, request: Optional[Request]) -> Dict:
+        if not request:
+            raise Exception({"error": "No request provided."})
+
+        payload = dict(request.json_body or {})
+
+        new_payload = {}
+
+        new_payload["email"] = payload.get("email", None)
+        new_payload["password"] = payload.get("password", None)
+
+        if not new_payload["email"]:
+            raise Exception({"error": "Email is required."})
+
+        if not new_payload["password"]:
+            raise Exception({"error": "Password is required to create a user."})
+
+        # remove empty values
+        return {k: v for k, v in new_payload.items() if v is not None}
+
+    # Auth Sign Up Information
+    @db_session
+    def auth_sign_up_user_handler(self, request: Optional[Request]) -> Optional[Dict]:
+        if not request:
+            raise Exception({"error": "No request provided"})
+
+        try:
+            if request.method == "POST":
+                return self.sign_up_user(request)
             else:
                 raise Exception({"error": "Method not allowed"})
         except Exception as e:
@@ -37,10 +97,10 @@ class MuscleCoreAPIAuthenticationHandler:
             raise Exception({"error": error_message})
 
     @db_session
-    def post_user(self, request):
+    def sign_up_user(self, request):
 
         # get payload
-        payload = self.post_user_validation(request)
+        payload = self.sign_up_user_validation(request)
 
         # get password to save
         password_hash, salt = self.get_password_to_save(payload.get("password", ""))
@@ -49,33 +109,33 @@ class MuscleCoreAPIAuthenticationHandler:
         payload.pop("password")
 
         try:
+            # check if user exists
+            user = self.auth_bd_actions.get_user_by_email(payload.get("email", ""))
+
+            if user:
+                raise Exception({"error": "User already exists."})
+
             user = self.auth_bd_actions.create_user(
                 **payload, password=password_hash, salt_password=salt
             )
 
             print("User created")
-            print(user)
-            print(user.to_dict())
 
             if not user:
                 raise Exception({"error": "Error while creating user."})
             if not isinstance(user, User):
                 raise Exception({"error": "Error while creating user."})
 
-            print(user.created_at)
-
             response = {
                 "user": user.to_dict(),
                 "token": self.encode_authentication_jwt(str(user.user_id)),
             }
 
-            print(response)
-
             return response
         except Exception as e:
             raise Exception({"error": f"Error while creating user. Exception: {e}"})
 
-    def post_user_validation(self, request: Optional[Request]) -> Dict:
+    def sign_up_user_validation(self, request: Optional[Request]) -> Dict:
         if not request:
             raise Exception({"error": "No request provided."})
 
@@ -128,7 +188,7 @@ class MuscleCoreAPIAuthenticationHandler:
 
         return password_hash.hex(), salt.hex()
 
-    def check_password(self, password, salt, password_hash):
+    def check_password(self, password: str, salt:str, password_hash:str):
         has_to_verify = self.hash_password(password, bytes.fromhex(salt))
 
         return has_to_verify == bytes.fromhex(password_hash)
