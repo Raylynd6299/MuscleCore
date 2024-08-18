@@ -14,7 +14,7 @@ init_db()
 @app.middleware("http")
 def require_authorization_header_middleware(event, get_response):
     # Middleware to require the Authorization header
-    unauthorized_paths = ["/sign-up", "/healthcheck"]
+    unauthorized_paths = [ "/healthcheck", "/sign-up", "/sign-in" ]
     url_path = event.context["resourcePath"]
     print("URL PATH: ", url_path)
 
