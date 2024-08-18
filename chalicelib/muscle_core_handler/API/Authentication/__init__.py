@@ -45,6 +45,9 @@ class MuscleCoreAPIAuthenticationHandler:
         # get password to save
         password_hash, salt = self.get_password_to_save(payload.get("password", ""))
 
+        # remove password from payload
+        payload.pop("password")
+
         try:
             user = self.auth_bd_actions.create_user(
                 **payload, password=password_hash, salt_password=salt
