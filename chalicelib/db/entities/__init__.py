@@ -34,7 +34,7 @@ class User(muscle_core_db.Entity):
     first_name = Required(str, column="first_name", nullable=False)
     last_name = Required(str, column="last_name", nullable=False)
     image_url = Optional(str, column="image_url", nullable=True)
-    email = Required(str, column="email", nullable=False)
+    email = Required(str, column="email", nullable=False, unique=True)
     password = Required(str, column="password", nullable=False)
     salt_password = Required(str, column="salt_password", nullable=False)
     created_at = Required(datetime, column="created_at", nullable=False, default=datetime.now)
