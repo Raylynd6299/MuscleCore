@@ -33,7 +33,7 @@ class User(muscle_core_db.Entity):
     user_id = PrimaryKey(UUID, column="user_id", nullable=False, auto=True)
     first_name = Required(str, column="first_name", nullable=False)
     last_name = Required(str, column="last_name", nullable=False)
-    image_url = Optional(str, column="image", nullable=True)
+    image_url = Optional(str, column="image_url", nullable=True)
     email = Required(str, column="email", nullable=False)
     password = Required(str, column="password", nullable=False)
     salt_password = Required(str, column="salt_password", nullable=False)
