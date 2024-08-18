@@ -50,7 +50,7 @@ class User(muscle_core_db.Entity):
 
     def to_dict(self):
         return {
-            "user_id": self.user_id,
+            "user_id": str(self.user_id),
             "first_name": self.first_name,
             "last_name": self.last_name,
             "email": self.email,
