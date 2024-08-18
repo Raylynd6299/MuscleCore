@@ -21,26 +21,13 @@ class MuscleCoreAPIAuthenticationDBActionsHandler:
         image_url: Optional[str] = None,
     ) -> User:
         print("Creating user")
-        print(first_name)
-        print(last_name)
-        print(email)
-        print(password)
-        print(salt_password)
-        print(role_id)
-        print(is_active)
-        print(image_url)
 
         if not role_id:
-            print("Role not provided")
             role: Optional[Role] = Role.get(code="user")
-            print ("Role: ", role)
             
             if not role:
                 raise Exception({"error": "Roles not found."})
             
-            print("Role found")
-            print(role.role_id)
-
             role_id = str(role.role_id or "")	
 
         return User(

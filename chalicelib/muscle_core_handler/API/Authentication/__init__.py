@@ -61,10 +61,14 @@ class MuscleCoreAPIAuthenticationHandler:
             if not isinstance(user, User):
                 raise Exception({"error": "Error while creating user."})
 
-            return {
-                user: user.to_dict(),
+            response = {
+                "user": user.to_dict(),
                 "token": self.encode_authentication_jwt(user.user_id),
             }
+
+            print(response)
+
+            return response
         except Exception as e:
             raise Exception({"error": f"Error while creating user. Exception: {e}"})
 
