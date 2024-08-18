@@ -1,5 +1,4 @@
 from datetime import datetime
-from enum import auto
 from pony.orm import Database, PrimaryKey, Required, Optional, Set
 from uuid import UUID
 
@@ -30,10 +29,13 @@ class Difficulty:
 class User(muscle_core_db.Entity):
     _table_ = "user"
     user_id = PrimaryKey(UUID, column="user_id", nullable=False, auto=True)
+    first_name = Required(str, column="first_name", nullable=False)
+    last_name = Required(str, column="last_name", nullable=False)
+    image_url = Optional(str, column="image", nullable=True)
     email = Required(str, column="email", nullable=False)
     password = Required(str, column="password", nullable=False)
     salt_password = Required(str, column="salt_password", nullable=False)
-    created_at = Required(str, column="created_at", nullable=False)
+    created_at = Required(datetime, column="created_at", nullable=False, auto=True)
     is_active = Required(bool, column="is_active", nullable=False, default=True)
     role = Required(lambda: Role, column="role_id", nullable=False)
 
@@ -45,6 +47,18 @@ class User(muscle_core_db.Entity):
     # histories
     user_histories = Set(lambda: UserHistory)
     user_exercise_histories = Set(lambda: ExerciseHistory)
+
+    def to_dict(self):
+        return {
+            "user_id": self.user_id,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "image_url": self.image_url,
+            "created_at": self.created_at.isoformat() if self.created_at and isinstance(self.created_at,datetime) else None,
+            "is_active": self.is_active,
+            "role": self.role.to_dict() if self.role and isinstance(self.role,Role) else None,
+        }
 
 
 class Role(muscle_core_db.Entity):
@@ -69,6 +83,8 @@ class Exercise(muscle_core_db.Entity):
     exercise_id = PrimaryKey(UUID, column="exercise_id", nullable=False, auto=True)
     name = Required(str, column="name", nullable=False)
     description = Optional(str, column="description", nullable=True)
+    image_url = Optional(str, column="image_url", nullable=True)
+    video_url = Optional(str, column="video_url", nullable=True)
     is_active = Required(bool, column="is_active", nullable=False, default=True)
     muscular_group = Required(MuscularGroup, column="muscular_group_id")
     workouts = Set(lambda: Workout)
