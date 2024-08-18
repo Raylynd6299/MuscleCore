@@ -1,5 +1,5 @@
 import os
-from entities import  muscle_core_db
+from .entities import  muscle_core_db
 
 # Credentials for connection with supabase
 SUPABASE_CONNECTION_STRING = os.getenv(
