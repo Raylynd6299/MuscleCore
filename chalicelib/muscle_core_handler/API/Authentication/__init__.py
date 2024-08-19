@@ -31,8 +31,11 @@ class MuscleCoreAPIAuthenticationHandler:
             else:
                 raise Exception({"error": "Method not allowed"})
         except Exception as e:
-            if hasattr(e, "error"):
-                raise Exception({"error": f"{e.error}"}) # type: ignore
+            error_dict = e.args[0] if e.args else None
+
+            if isinstance(error_dict, dict) and "error" in error_dict:
+                error_message = error_dict.get("error")
+                raise Exception({"error": f"{error_message}"}) # type: ignore
             
             error_message = f"Error while processing muscle core info. Exception {e}"
             print(error_message)
@@ -94,8 +97,13 @@ class MuscleCoreAPIAuthenticationHandler:
             else:
                 raise Exception({"error": "Method not allowed"})
         except Exception as e:
-            if hasattr(e, "error"):
-                raise Exception({"error": f"{e.error}"}) # type: ignore
+
+            error_dict = e.args[0] if e.args else None
+
+            if isinstance(error_dict, dict) and "error" in error_dict:
+                error_message = error_dict.get("error")
+                raise Exception({"error": f"{error_message}"}) # type: ignore
+            
             error_message = f"Error while processing muscle core info. Exception {e}"
             print(error_message)
             print(e)
